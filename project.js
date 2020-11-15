@@ -1,4 +1,5 @@
 var svg;
+var gauge;
 
 var width;
 var height;
@@ -17,12 +18,15 @@ document.addEventListener('DOMContentLoaded', function() {
     innerH = height - margin.top - margin.bottom;
 
     // Load both files before doing anything else
-    Promise.all([d3.json('data/countries.geo.json')])
+    Promise.all([d3.json('data/countries.geo.json'), 
+              d3.json('data/world-countries.json')])
           .then(function(values){
     
     geoData = values[0];
+    happyData = values[1];
    
     drawMap();
+    drawGauge();
   })
 })
 
@@ -65,4 +69,38 @@ function drawMap() {
     // })
     .style('stroke', 'black')
     .style('stroke-width', "1");
+}
+
+function drawGauge()
+{
+  gauge = d3.select('#gauge')
+
+  arc = d3.arc()
+  .innerRadius(100)
+  .outerRadius(185)
+  .startAngle(-1.55)
+  .endAngle(1.55)
+
+  const defs = gauge.append("defs");
+  const linearGradient = defs.append("linearGradient").attr("id", "linear-gradient");
+ 
+  var colorScale = d3.scaleSequential(d3.interpolateRdYlGn).domain([0, 200]); //get our scale of colors given max GDP
+  //var axisScale = d3.scaleLinear().domain(colorScale.domain()).range([0, 200]);
+
+  linearGradient.selectAll("stop") //Create the gradient
+     .data(colorScale.ticks().map((t, i, n) => ({ offset: `${100*i/n.length}%`, color: colorScale(t) })))
+     .enter().append("stop")
+     .attr("offset", d => d.offset)
+     .attr("stop-color", d => d.color)
+
+     gauge.append('path')// Create the rectangle and apply gradient to it
+     .attr('transform', `translate(500, 300)`)
+     .attr('d', arc)
+     .style("fill", "url(#linear-gradient)");
+
+     gauge.append('line')
+     .attr('x1', 500)
+     .attr('y1', 300)
+     .attr('x2', 300)
+     .attr('y2', 100)
 }
