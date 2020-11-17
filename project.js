@@ -42,6 +42,10 @@ function drawMap() {
                                     +svg.style('height').replace('px','')/2.2]);
     let path = d3.geoPath()
                  .projection(projection);
+    
+    var tooltip = d3.select("body")
+      .append("div")
+      .attr('class', 'tooltip');
 
     let g = svg.append('g');
     g.selectAll('path')
@@ -49,7 +53,7 @@ function drawMap() {
     .enter()
     .append('path')
     .attr('d', path)
-    .style('fill', "blue")
+    .style('fill', "yellow")
     // .style('fill', function() {
     //     var x = Math.random()
     //     if(x > 0 && x < .2) {
