@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
    
     drawMap();
     drawGauge();
+    drawSpider();
   })
 })
 
@@ -68,7 +69,26 @@ function drawMap() {
     //     }
     // })
     .style('stroke', 'black')
-    .style('stroke-width', "1");
+    .style('stroke-width', "1")
+    .on('mouseover', function(d,i) {
+      console.log('mouseover on ' + d.properties.name)
+      tooltip
+        .style('visibility', 'visible')
+        .style('left', d3.event.pageX + 'px')
+        .style('top', d3.event.pageY + 'px')
+        .html("Country: " + d.properties.name  + "</br>" + "Happiness Index: " + "</br>" + "Year: ")
+      d3.select(this).style('stroke-width', 4)
+      d3.select(this).style('stroke', 'red');
+    })
+    .on('mousemove',function(d,i) {
+      console.log('mousemove on ' + d.properties.name);
+    })
+    .on('mouseout', function(d,i) {
+      console.log('mouseout on ' + d.properties.name);
+      tooltip.style('visibility' , 'hidden')
+      d3.select(this).style('stroke-width', 1)
+      d3.select(this).style('stroke', 'black');
+    });
 }
 
 function drawGauge()
@@ -103,4 +123,9 @@ function drawGauge()
      .attr('y1', 300)
      .attr('x2', 300)
      .attr('y2', 100)
+}
+
+function drawSpider(){
+    
+    
 }
