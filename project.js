@@ -29,7 +29,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Load both files before doing anything else
     Promise.all([d3.json('data/countries.geo.json'), 
-              d3.json('data/world-countries.json'), d3.json('data/happiness_data.json')])
+              d3.json('data/world-countries.json'), 
+              d3.json('data/happiness_data.json')])
           .then(function(values){
     
 
@@ -39,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
    
     drawMap();
     drawGauge();
-    //drawSpider();
+    drawSpider();
   })
 })
 
@@ -133,16 +134,57 @@ function drawGauge()
      .attr("offset", d => d.offset)
      .attr("stop-color", d => d.color)
 
+
      gauge.append('path')// Create the rectangle and apply gradient to it
      .attr('transform', `translate(500, 300)`)
      .attr('d', arc)
      .style("fill", "url(#linear-gradient)");
+    
+     gauge.append('rect')
+     .attr('width', 2)
+     .attr('height', 85)
+     .attr('x', 540)
+     .attr('y', -324)
+     .attr('transform', 'rotate(45)')
 
-     gauge.append('line')
-     .attr('x1', 500)
-     .attr('y1', 300)
-     .attr('x2', 300)
-     .attr('y2', 100)
+     gauge.append('rect')
+     .attr('width', 2)
+     .attr('height', 85)
+     .attr('x', 165)
+     .attr('y', 384)
+     .attr('transform', 'rotate(-45)')
+
+     gauge.append('image')
+     .attr('width', 75)
+     .attr('height', 75)
+     .attr('x', 590)
+     .attr('y', 200)
+     .attr('href', 'data/Excited-Smiley-Face.svg')
+     .attr('opacity', '1')
+    
+     gauge.append('image')
+     .attr('width', 75)
+     .attr('height', 75)
+     .attr('x', 462)
+     .attr('y', 120)
+     .attr('href', 'data/Neutral-Smiley-Face.svg')
+     .attr('opacity', '1')
+
+     gauge.append('image')
+     .attr('width', 75)
+     .attr('height', 75)
+     .attr('x', 333)
+     .attr('y', 205)
+     .attr('href', 'data/Upset-Face.svg')
+     .attr('opacity', '1')
+
+     gauge.append('image')
+     .attr('width', 250)
+     .attr('height', 250)
+     .attr('x', 375)
+     .attr('y', 160)
+     .attr('href', 'data/arrow_direction_blue_48.svg')
+     .attr('opacity', '1')
 }
 
 
@@ -150,9 +192,7 @@ function drawGauge()
 
 function drawSpider(name){
   
-let svg = d3.select("body").append("svg")
-  .attr("width", 600)
-  .attr("height", 600);
+let svg = d3.select("#spider").append("svg")
 
 
 let color = d3.scaleOrdinal(d3.schemeCategory10) //creates the color gradients for the data
