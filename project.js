@@ -18,8 +18,6 @@ var currentCountry = "Canada"
 let svgS = d3.select("#spider").append("svg")
 
 
-
-
 let radialScale = d3.scaleLinear()
   .domain([0,10]) //domain for the data values 
   .range([0,250]);
@@ -51,7 +49,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function drawMap() {
 
-    svg.selectAll("*").remove();
+  svg.selectAll("*").remove();
+
+  const defs = svg.append("defs");
+  const linearGradient = defs.append("linearGradient").attr("id", "linear-gradient");
+
+  var colorScale = d3.scaleSequential(d3.interpolateRdYlGn).domain([150, 1]);
+
+
+  linearGradient.selectAll("stop")
+  .data(colorScale.ticks().map((t, i, n) => ({ offset: `${100*i/n.length}%`, color: colorScale(t) })))
+  .enter().append("stop")
+  .attr("offset", d => d.offset)
+  .attr("stop-color", d => d.color)
+ 
     // create the map projection and geoPath
     let projection = d3.geoMercator()
                         .scale(150)
@@ -71,7 +82,15 @@ function drawMap() {
     .enter()
     .append('path')
     .attr('d', path)
-    .style('fill', "yellow")
+    .style('fill', d => {
+      try { 
+      let val = +happyData["('2015', '"+d.properties.name.toString()+"')"].rank;
+      return colorScale(val);
+      }
+      catch(err){
+        return 'white'
+      }
+    })
     // .style('fill', function() {
     //     var x = Math.random()
     //     if(x > 0 && x < .2) {
@@ -220,8 +239,17 @@ function drawSpider(){
 
   let data = [];
 
-  let color = d3.scaleOrdinal(d3.schemeCategory10) //creates the color gradients for the data
+  var colorScale = d3.scaleSequential(d3.interpolateRdYlGn).domain([150, 1]);
 
+  const defs = svgS.append("defs");
+  const linearGradient = defs.append("linearGradient").attr("id", "linear-gradient");
+
+  linearGradient.selectAll("stop")
+     .data(colorScale.ticks().map((t, i, n) => ({ offset: `${100*i/n.length}%`, color: colorScale(t) })))
+     .enter().append("stop")
+     .attr("offset", d => d.offset)
+     .attr("stop-color", d => d.color)
+ 
   var point = {}
   entry = "('2015', '" + currentCountry + "')"
   console.log(entry)
@@ -291,9 +319,17 @@ function drawSpider(){
       .data(data)
       .datum(cord)
       .attr("d", line)
-      .attr("stroke-width", 3)
+      .attr("stroke-width", 0)
       .attr("stroke", "black")
-      .attr("fill", "black")
+      .attr('fill', d => {
+        try { 
+        let val = +happyData[entry].rank;
+        return colorScale(val);
+        }
+        catch(err){
+          return 'white'
+        }
+      })
       .attr("stroke-opacity", 1)
       .attr("opacity", 0.5);
       // .on('mouseover', function(d,i) {
