@@ -31,7 +31,7 @@ df5 = df.copy()
 
 df["rank"] = df2015["Happiness Rank"]
 df["score"] = df2015["Happiness Score"]
-df["country"] = df2015["Country"]
+df["country"] = df2015["Country"].str.replace('United States','United States of America')
 df["economy"] = df2015["Economy (GDP per Capita)"]
 df["social_support"] = df2015["Family"]
 df["health"] = df2015["Health (Life Expectancy)"]
@@ -45,7 +45,7 @@ for column in ["score", "economy", "social_support", "health", "freedom", "trust
 
 df2["rank"] = df2016["Happiness Rank"]
 df2["score"] = df2016["Happiness Score"]
-df2["country"] = df2016["Country"]
+df2["country"] = df2016["Country"].str.replace('United States','United States of America')
 df2["economy"] = df2016["Economy (GDP per Capita)"]
 df2["social_support"] = df2016["Family"]
 df2["health"] = df2016["Health (Life Expectancy)"]
@@ -59,7 +59,7 @@ for column in ["score", "economy", "social_support", "health", "freedom", "trust
 
 df3["rank"] = df2017["Happiness.Rank"]
 df3["score"] = df2017["Happiness.Score"]
-df3["country"] = df2017["Country"]
+df3["country"] = df2017["Country"].str.replace('United States','United States of America')
 df3["economy"] = df2017["Economy..GDP.per.Capita."]
 df3["social_support"] = df2017["Family"]
 df3["health"] = df2017["Health..Life.Expectancy."]
@@ -73,7 +73,7 @@ for column in ["score", "economy", "social_support", "health", "freedom", "trust
 
 df4["rank"] = df2018["Overall rank"]
 df4["score"] = df2018["Score"]
-df4["country"] = df2018["Country or region"]
+df4["country"] = df2018["Country or region"].str.replace('United States','United States of America')
 df4["economy"] = df2018["GDP per capita"]
 df4["social_support"] = df2018["Social support"]
 df4["health"] = df2018["Healthy life expectancy"]
@@ -87,7 +87,7 @@ for column in ["score", "economy", "social_support", "health", "freedom", "trust
 
 df5["rank"] = df2019["Overall rank"]
 df5["score"] = df2019["Score"]
-df5["country"] = df2019["Country or region"]
+df5["country"] = df2019["Country or region"].str.replace('United States','United States of America')
 df5["economy"] = df2019["GDP per capita"]
 df5["social_support"] = df2019["Social support"]
 df5["health"] = df2019["Healthy life expectancy"]
@@ -111,12 +111,12 @@ finaldf = finaldf.append(df4, ignore_index=True)
 finaldf = finaldf.append(df5, ignore_index=True)
 finaldf = finaldf.set_index(["year", "country"])
 
-print(finaldf.head())
+# print(finaldf.shape)
 # print("...")
 # print(finaldf.tail())
 
 result = finaldf.to_json(orient="index")
 parsed = json.loads(result)
 
-with open('happiness_data.json', 'w') as f:
+with open('data/happiness_data.json', 'w') as f:
     json.dump(parsed, f)
