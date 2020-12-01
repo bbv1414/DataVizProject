@@ -107,13 +107,23 @@ function drawMap() {
       //   .html("Country: " + d.properties.name  + "</br>" + "Happiness Index: " + "</br>" + "Year: ")
       d3.select(this).style('stroke-width', 2)
       d3.select(this).style('stroke', 'black');
-      var display = "('2015', '"+d.properties.name.toString()+"')";
-      d3.select(this).transition()
-                .style("stroke", "black")
-                .attr("stroke-width", 4);
-      tooltip.style("visibility", "visible")
-      .html("Country: " + d.properties.name  + "</br>" + "Happiness Rank: " + happyData[display.toString()].rank + "</br>" + "Year: 2015")
-    })
+      console.log(typeof(d.properties.name))
+      try {
+        var display = "('2015', '"+d.properties.name.toString()+"')";
+        d3.select(this).transition()
+                  .style("stroke", "black")
+                  .attr("stroke-width", 4);
+        tooltip.style("visibility", "visible")
+        .html("Country: " + d.properties.name  + "</br>" + "Happiness Rank: " + happyData[display.toString()].rank + "</br>" + "Year: 2015")
+      }
+      catch (err) {
+        d3.select(this).transition()
+                  .style("stroke", "black")
+                  .attr("stroke-width", 4);
+        tooltip.style("visibility", "visible")
+        .html("Country: " + d.properties.name  + "</br>" + "No Happiness Data")
+      }
+  })
     .on('mousemove',function(d,i) {
       return tooltip.style("top",
     (d3.event.pageY-20)+"px").style("left",(d3.event.pageX+20)+"px");
