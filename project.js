@@ -9,6 +9,16 @@ var margin = { top: 50, right: 30, bottom: 20, left: 30 };
 
 var geoData;
 var happyData;
+let data = [];
+let features = ["Economy", "Social Support", "Health", "Generosity", "Freedom", "Trust in Government"];
+
+
+
+
+let radialScale = d3.scaleLinear()
+  .domain([0,10]) //domain for the data values 
+  .range([0,250]);
+
 
 document.addEventListener('DOMContentLoaded', function() {
     svg = d3.select('#svg');
@@ -19,15 +29,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Load both files before doing anything else
     Promise.all([d3.json('data/countries.geo.json'), 
-              d3.json('data/world-countries.json')])
+              d3.json('data/world-countries.json'), d3.json('data/happiness_data.json')])
           .then(function(values){
     
-    geoData = values[0];
-    happyData = values[1];
+
+    
+    geoData = values[1];
+    happyData = values[2];
    
     drawMap();
     drawGauge();
-    drawSpider();
+    //drawSpider();
   })
 })
 
@@ -74,8 +86,12 @@ function drawMap() {
     // })
     .style('stroke', 'black')
     .style('stroke-width', "1")
+    .on('mousedown', function(d,i){
+      drawSpider(d.properties.name);
+      console.log(d.properties.name)
+    })
     .on('mouseover', function(d,i) {
-      console.log('mouseover on ' + d.properties.name)
+      //console.log('mouseover on ' + d.properties.name)
       tooltip
         .style('visibility', 'visible')
         .style('left', d3.event.pageX + 'px')
@@ -85,10 +101,10 @@ function drawMap() {
       d3.select(this).style('stroke', 'red');
     })
     .on('mousemove',function(d,i) {
-      console.log('mousemove on ' + d.properties.name);
+      //console.log('mousemove on ' + d.properties.name);
     })
     .on('mouseout', function(d,i) {
-      console.log('mouseout on ' + d.properties.name);
+      //console.log('mouseout on ' + d.properties.name);
       tooltip.style('visibility' , 'hidden')
       d3.select(this).style('stroke-width', 1)
       d3.select(this).style('stroke', 'black');
@@ -129,7 +145,124 @@ function drawGauge()
      .attr('y2', 100)
 }
 
-function drawSpider(){
+
+
+
+function drawSpider(name){
+  
+let svg = d3.select("body").append("svg")
+  .attr("width", 600)
+  .attr("height", 600);
+
+
+let color = d3.scaleOrdinal(d3.schemeCategory10) //creates the color gradients for the data
+for (i = 0; i < happyData.count; i++){
+  if(happyData[i].properties.name == name){
+    data.push(happyData[i])
+  }
+}
+
+let ticks = [1,2,3,4,5,6,7,8,9,10]; //how many cirlce values we want
+
+ticks.forEach(t =>
+  svg.append("circle")
+  .attr("cx", 500)
+  .attr("cy", 325)
+  .attr("fill", "none")
+  .attr("stroke", "gray")
+  .attr("r", radialScale(t)));
+  //makes the actual circles 
+
+
+  ticks.forEach(t =>
+    svg.append("text")
+    .attr("x", 500)
+    .attr("y", 325 - radialScale(t))
+    .text(t.toString())
+    ); //adds the numbers 
+
+    for(var x = 0; x < features.length; x++){
+      let label = features[x];
+      let angle = (Math.PI / 2) + (2 * Math.PI * x / features.length);
+      let linep = (Math.cos(angle) * radialScale(10)) + 500 ;
+      let liney = 325 - (Math.sin(angle) * radialScale(10));
+      let labelp = (Math.cos(angle) * radialScale(10.5)) + 500;
+      let labely = 325 - (Math.sin(angle) * radialScale(10.5));
+
+      svg.append("line")
+      .attr("x1", 500)
+      .attr("y1", 325)
+      .attr("x2", linep)
+      .attr("y2", liney)
+      .attr("stroke", "black");
+
+      svg.append("text")
+      .attr("x", labelp)
+      .attr("y", labely)
+      .text(label);
+
+    }
+
+    let line = d3.line()
+      .x(d => d.x)
+      .y(d => d.y);
+
     
+
+    for(var t = 0; t < data.length; t++){
+      let d = data[t];
+     // let colors = color[t];
+      let cord = getPath(d);
+
+
+      svg.append("path")
+      .data(happyData.features)
+      .datum(cord)
+      .attr("d", line)
+      .attr("stroke-width", 3)
+      .attr("stroke", "black")
+      .attr("fill", "black")
+      .attr("stroke-opacity", 1)
+      .attr("opacity", 0.5);
+      // .on('mouseover', function(d,i) {
+      //   //console.log('mouseover on ' + d.properties.name)
+      //   tooltip
+      //     .style('visibility', 'visible')
+      //     .style('left', d3.event.pageX + 'px')
+      //     .style('top', d3.event.pageY + 'px')
+      //     .html("Country: " + d.properties.name  + "</br>" + "Happiness Index: " + "</br>" + "Year: ")
+      //   d3.select(this).style('stroke-width', 4)
+      //   d3.select(this).style('stroke', 'red');
+      // })
+      // .on('mousemove',function(d,i) {
+      //   //console.log('mousemove on ' + d.properties.name);
+      // })
+      // .on('mouseout', function(d,i) {
+      //   //console.log('mouseout on ' + d.properties.name);
+      //   tooltip.style('visibility' , 'hidden')
+      //   d3.select(this).style('stroke-width', 1)
+      //   d3.select(this).style('stroke', 'black');
+      // });
+    }
+
+
+
+}
+
+
+function angles(an, point){
+  let x = Math.cos(an) * radialScale(point);
+  let y = Math.sin(an) * radialScale(point);
+  return{"x": 500 + x, "y": 325 - y}
+}
+
+function getPath(point){
+  let finalCords = [];
+  for( var j = 0; j < features.length; j++){
+    let name = features[j];
+    let angle = (Math.PI / 2) + (2 * Math.PI * j / features.length);
     
+    finalCords.push(angles(angle, point[name]));
+  }
+return finalCords;
 }
