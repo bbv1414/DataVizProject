@@ -105,8 +105,8 @@ function drawMap() {
       //   .style('left', d3.event.pageX + 'px')
       //   .style('top', d3.event.pageY + 'px')
       //   .html("Country: " + d.properties.name  + "</br>" + "Happiness Index: " + "</br>" + "Year: ")
-      // d3.select(this).style('stroke-width', 4)
-      // d3.select(this).style('stroke', 'black');
+      d3.select(this).style('stroke-width', 2)
+      d3.select(this).style('stroke', 'black');
       var display = "('2015', '"+d.properties.name.toString()+"')";
       d3.select(this).transition()
                 .style("stroke", "black")
