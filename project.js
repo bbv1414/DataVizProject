@@ -1,5 +1,6 @@
 var svg;
 var gauge;
+var bar;
 
 var width;
 var height;
@@ -46,6 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
     drawMap();
     drawGauge();
     drawSpider();
+    drawBar();
   })
 })
 
@@ -56,6 +58,7 @@ function draw()
   drawMap();
   drawGauge();
   drawSpider();
+  drawBar();
 }
 function drawMap() {
 
@@ -99,7 +102,7 @@ function drawMap() {
       try { 
         if(fil.toString() == 'rank'){
           let val = +happyData["('"+ years +"', '"+d.properties.name.toString()+"')"].rank;
-          console.log("test")
+          //console.log("test")
 
           //console.log(val)
           return(colorScale(val));
@@ -210,6 +213,10 @@ function drawMap() {
         tooltip.style("visibility", "visible")
         .html("Country: " + d.properties.name  + "</br>" + "No Happiness Data")
       }
+  })
+  .on('dblclick', () => {
+    $('html, body').animate({scrollTop: $(document).height()}, 'slow')
+    //console.log("hit")
   })
     .on('mousemove',function(d,i) {
       return tooltip.style("top",
@@ -353,7 +360,7 @@ function drawGauge()
         rotate = `rotate(${-120 + 210* cScore}, 172,1000)`
     }
     else{
-      console.log(typeof rotate)
+      //console.log(typeof rotate)
       var interpolate = d3.interpolateString(rotate, `rotate(${-90 + 180* cScore}, 172,1000)`)
         gauge.select('#arrow')
         .data(datap)
@@ -478,14 +485,99 @@ function angles(an, point){
 }
 
 function getPath(point){
-  console.log(point[features[0]])
+  //console.log(point[features[0]])
   let finalCords = [];
   for( var j = 0; j < features.length; j++){
     let name = features[j];
     let angle = (Math.PI / 2) + (2 * Math.PI * j / features.length);
-    console.log(angle)
-    console.log(point[name])
+    //console.log(angle)
+    //console.log(point[name])
     finalCords.push(angles(angle, point[name]));
   }
 return finalCords;
+}
+
+function drawBar(){
+
+  bar = d3.select('#bar');
+
+  bar.selectAll("*").remove();
+
+  data2 = []
+
+  var point = {}
+  //entry = "('"+ years + "', '" + currentCountry + "')";
+  for (const [key, value] of Object.entries(happyData)) {
+    //console.log(key, value)
+    if (value.rank < 26 && key.includes(years)) {
+      point[key] = value
+      data2.push(value);
+      point = {}
+      //console.log(value.rank)
+    }
+  }
+
+  console.log(data2)
+
+  // d3.csv('data/population_by_country_2020.csv').then(s => {
+  //   // console.log(data);
+
+  //   // 5. This is an example of how to sort JS arrays with a comparator function.
+  //   // Try swapping the "a" and "b" in the compparison statement.
+  //   s.sort(function(a,b) {
+  //       return +b["Population (2020)"] - +a["Population (2020)"];
+  //   });
+
+  //   // 6. Only get the first 10 items in the array.
+  //   s = s.slice(0,10);
+
+  //   // 7. This bit of data wrangling makes it easier to reference the data.
+  //   // You can use your browser's dev tools to see the items and their attributes
+  //   s.forEach(d => {
+  //       d.population = +d["Population (2020)"];
+  //       d.country = d["Country (or dependency)"];
+  //   });
+  //   console.log(s)
+  // });
+
+
+  const xScale = d3.scaleLinear()
+      .domain([d3.mean(data2, function(d) {  return +d.score; })-2, d3.max(data2, function(d) {  return +d.score; })])
+      .range([0,900]); 
+  const yScale = d3.scaleBand()
+      .domain(data2.map(function(d) { return +d.rank;}))
+      .range([0,550])
+      .padding(0.1);
+
+  const g = bar.append('g')
+  .attr('transform', 'translate('+margin.left+', '+margin.top+')');
+
+  var barchart = g.selectAll('rect')
+  .data(data2)
+  .enter()
+  .append('rect')
+  .attr('y', d => yScale(+d.rank))
+  .attr('height',yScale.bandwidth())
+  .attr('width', function(d) {
+      return  xScale(+d.score);
+  });
+
+  const yAxis = d3.axisLeft(yScale);
+  g.append('g').call(yAxis)
+                .selectAll('.domain, .tick line').remove()
+
+  const xAxisTickFormat = function(d) { 
+          return d3.format('.3s')(d).replace('G','B') 
+  }
+  const xAxis = d3.axisBottom(xScale)
+                  .tickFormat(xAxisTickFormat)
+                  .tickSize(-550);                
+  var gXAxis = g.append('g').call(xAxis);
+  gXAxis.selectAll('.domain').remove();                   
+  gXAxis.attr('transform',`translate(0,${550})`)
+                  .selectAll("text")    
+                      .style("text-anchor", "end") 
+                      .attr("dx", "-5px")           
+                      .attr("dy", "0px")               
+                      .attr("transform", "rotate(-45)" );
 }
