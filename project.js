@@ -510,10 +510,9 @@ function drawBar(){
   for (const [key, value] of Object.entries(happyData)) {
     //console.log(key, value)
     if (value.rank < 26 && key.includes(years)) {
-      point[key] = value
+      value.country = key.split("'")[3]
       data2.push(value);
       point = {}
-      //console.log(value.rank)
     }
   }
 
@@ -556,11 +555,13 @@ function drawBar(){
   .data(data2)
   .enter()
   .append('rect')
+  .attr('fill', 'black')
   .attr('y', d => yScale(+d.rank))
   .attr('height',yScale.bandwidth())
   .attr('width', function(d) {
       return  xScale(+d.score);
   });
+
 
   const yAxis = d3.axisLeft(yScale);
   g.append('g').call(yAxis)
@@ -580,4 +581,19 @@ function drawBar(){
                       .attr("dx", "-5px")           
                       .attr("dy", "0px")               
                       .attr("transform", "rotate(-45)" );
+
+
+  yDist = 68
+  for(var l = 0; l < 25; l++)
+  {
+    bar.append('text')
+    .attr('x', 45)
+    .attr('y', yDist)
+    .attr('fill', 'white')
+    .text(function(){return data2[l].country})
+  
+    yDist += 21.9
+  }
+
+  
 }
