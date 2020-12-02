@@ -285,6 +285,12 @@ function drawGauge()
     //  .attr('fill', 'white')
     //  .attr('opacity', '.7')
 
+    gauge.append('text')
+    .attr('x', 700)
+    .attr('y', 1000)
+    .attr('font-size', '40px')
+    .text(currentCountry)
+
      gauge.append('path')// Create the rectangle and apply gradient to it
      .attr('transform', `translate(175, 1000)`)
      .attr('d', arc)
@@ -355,6 +361,8 @@ function drawGauge()
         .duration(2000)
         .ease(d3.easeElastic)
         .attrTween('transform', function(d,i,a){return interpolate})
+
+        gauge.select('text').text(currentCountry)
     }
     rotate = `rotate(${-90 + 180* cScore}, 172,1000)`
 
