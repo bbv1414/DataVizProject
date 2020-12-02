@@ -49,10 +49,18 @@ document.addEventListener('DOMContentLoaded', function() {
   })
 })
 
+function draw()
+{
+  load = 0
+  d3.select('#spider').select('*').remove()
+  drawMap();
+  drawGauge();
+  drawSpider();
+}
 function drawMap() {
 
   svg.selectAll("*").remove();
-
+  load = 0
   const defs = svg.append("defs");
   const linearGradient = defs.append("linearGradient").attr("id", "linear-gradient");
 
@@ -249,10 +257,10 @@ function drawGauge()
     var cScore = datap[0]['health'] / 10
   }
 
-  gauge = d3.select('#gauge')
+  gauge = d3.select('#svg')
   arc = d3.arc()
-  .innerRadius(100)
-  .outerRadius(185)
+  .innerRadius(60)
+  .outerRadius(100)
   .startAngle(-1.55)
   .endAngle(1.55)
 
@@ -260,7 +268,7 @@ function drawGauge()
   const linearGradient = defs.append("linearGradient").attr("id", "linear-gradient");
  
   var colorScale = d3.scaleSequential(d3.interpolateRdYlGn).domain([0, 200]); //get our scale of colors given max GDP
-  //var axisScale = d3.scaleLinear().domain(colorScale.domain()).range([0, 200]);
+  //var axisScale = d3.scaleLinear().domain(colorScale.domain()).range([0, 200])
   if(load == 0)
   {
   linearGradient.selectAll("stop") //Create the gradient
@@ -269,71 +277,78 @@ function drawGauge()
      .attr("offset", d => d.offset)
      .attr("stop-color", d => d.color)
 
+    //  gauge.append('rect')
+    //  .attr('width', 250)
+    //  .attr('height', 150)
+    //  .attr('x', 53)
+    //  .attr('y', 880)
+    //  .attr('fill', 'white')
+    //  .attr('opacity', '.7')
 
      gauge.append('path')// Create the rectangle and apply gradient to it
-     .attr('transform', `translate(500, 300)`)
+     .attr('transform', `translate(175, 1000)`)
      .attr('d', arc)
      .style("fill", "url(#linear-gradient)");
     
      gauge.append('rect')
      .attr('width', 2)
-     .attr('height', 85)
-     .attr('x', 540)
-     .attr('y', -324)
+     .attr('height', 42)
+     .attr('x', 816)
+     .attr('y', 484)
      .attr('transform', 'rotate(45)')
 
      gauge.append('rect')
      .attr('width', 2)
-     .attr('height', 85)
-     .attr('x', 165)
-     .attr('y', 384)
+     .attr('height', 42)
+     .attr('x', -575)
+     .attr('y', 731)
      .attr('transform', 'rotate(-45)')
 
      gauge.append('image')
-     .attr('width', 50)
-     .attr('height', 50)
-     .attr('x', 600)
-     .attr('y', 200)
+     .attr('width', 35)
+     .attr('height', 35)
+     .attr('x', 230)
+     .attr('y', 950)
      .attr('href', 'data/Excited-Smiley-Face.svg')
      .attr('opacity', '1')
     
      gauge.append('image')
-     .attr('width', 50)
-     .attr('height', 50)
-     .attr('x', 475)
-     .attr('y', 130)
+     .attr('width', 35)
+     .attr('height', 35)
+     .attr('x', 153)
+     .attr('y', 903)
      .attr('href', 'data/Neutral-Smiley-Face.svg')
      .attr('opacity', '1')
 
      gauge.append('image')
-     .attr('width', 50)
-     .attr('height', 50)
-     .attr('x', 353)
-     .attr('y', 205)
+     .attr('width', 35)
+     .attr('height', 35)
+     .attr('x', 85)
+     .attr('y', 950)
      .attr('href', 'data/Upset-Face.svg')
      .attr('opacity', '1')
 
 
-     rotate = `rotate(${-120 + 210* cScore}, 500,285)`
+     rotate = `rotate(${-190 + 180* cScore}, 172,1000)`
         gauge.append('image')
         .data(datap)
         .attr('id', 'arrow')
         .transition()
         .duration(0)
         .delay(200)
-        .attr('width', 150)
-        .attr('height', 150)
-        .attr('x', 425)
-        .attr('y', 160)
-        .attr('transform', `rotate(${-120 + 210* cScore}, 500,285)`)
+        .attr('width', 85)
+        .attr('height', 85)
+        .attr('x', 128)
+        .attr('y', 925)
+        .attr('transform', `rotate(${-90 + 180* cScore}, 172,1000)`)
         .attr('href', 'data/upPointer.svg')
         .attr('opacity', '1')
         load = 1;
-        rotate = `rotate(${-120 + 210* cScore}, 500,285)`
+        rotate = `rotate(${-120 + 210* cScore}, 172,1000)`
     }
     else{
       console.log(typeof rotate)
-      var interpolate = d3.interpolateString(rotate, `rotate(${-90 + 180* cScore}, 500,285)`)
+      var interpolate = d3.interpolateString(rotate, `rotate(${-90 + 180* cScore}, 172,1000)`)
         gauge.select('#arrow')
         .data(datap)
         .transition()
@@ -341,7 +356,7 @@ function drawGauge()
         .ease(d3.easeElastic)
         .attrTween('transform', function(d,i,a){return interpolate})
     }
-    rotate = `rotate(${-120 + 210* cScore}, 500,285)`
+    rotate = `rotate(${-90 + 180* cScore}, 172,1000)`
 
 }
 function drawSpider(){

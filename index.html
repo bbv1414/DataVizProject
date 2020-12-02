@@ -15,7 +15,7 @@
     <body>
         <h1>Happiness Index per Country (2015-2019)</h1>
         <label for = "yea">Select a year:</label>
-        <select id = "yea" onchange = "drawMap()">
+        <select id = "yea" onchange = "draw()">
             <option onchange = "drawMap()" value = "2015">2015</option>
             <option onchange = "drawMap()" value = "2016">2016</option>
             <option onchange = "drawMap()" value = "2017">2017</option>
@@ -24,22 +24,20 @@
         </select>
         <br><br>
             <label for = "filters">Select a filter:</label>
-            <select id = "filters" onchange = "drawMap()">
-                <option onchange = "drawMap()" value = "rank">Rank</option>
-                <option onchange = "drawMap()" value = "social_support">Social Support</option>
-                <option onchange = "drawMap()" value = "health">Health</option>
-                <option onchange = "drawMap()" value = "freedom">Freedom</option>
-                <option onchange = "drawMap()" value = "trust">Trust</option>
-                <option onchange = "drawMap()" value = "generosity">Generosity</option>
-                <option onchange = "drawMap()" value = "economy">Economy</option>
+            <select id = "filters" onchange = "draw()">
+                <option onchange = "draw()" value = "rank">Rank</option>
+                <option onchange = "draw()" value = "social_support">Social Support</option>
+                <option onchange = "draw()" value = "health">Health</option>
+                <option onchange = "draw()" value = "freedom">Freedom</option>
+                <option onchange = "draw()" value = "trust">Trust</option>
+                <option onchange = "draw()" value = "generosity">Generosity</option>
+                <option onchange = "draw()" value = "economy">Economy</option>
                 <br>
             </select>
             <br><br>
-            <div>
-                <svg id = 'gauge' class="gauge"></svg>
-            </div>
         <div>
-            <svg id='svg' class="map"></svg>
+            <svg id='svg' class="map">
+            </svg>
         </div>
         
         <div>
