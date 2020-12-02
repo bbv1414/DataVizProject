@@ -157,42 +157,42 @@ function drawMap() {
                   .style("stroke", "black")
                   .attr("stroke-width", 4);
         tooltip.style("visibility", "visible")
-        .html("Country: " + d.properties.name  + "</br>" + "Economy Rating: " + happyData[display.toString()].economy + "</br>" + "Year: "+ years)
+        .html("Country: " + d.properties.name  + "</br>" + "Economy Rating: " + happyData[display.toString()].economy.toFixed(2) + "</br>" + "Year: "+ years)
         }
         else if(fil == 'social_support'){
           d3.select(this).transition()
                   .style("stroke", "black")
                   .attr("stroke-width", 4);
         tooltip.style("visibility", "visible")
-        .html("Country: " + d.properties.name  + "</br>" + "Social Support Rating: " + happyData[display.toString()].social_support + "</br>" + "Year: "+ years)
+        .html("Country: " + d.properties.name  + "</br>" + "Social Support Rating: " + happyData[display.toString()].social_support.toFixed(2) + "</br>" + "Year: "+ years)
         }
         else if(fil == 'freedom'){
           d3.select(this).transition()
                   .style("stroke", "black")
                   .attr("stroke-width", 4);
         tooltip.style("visibility", "visible")
-        .html("Country: " + d.properties.name  + "</br>" + "Freedom Rating: " + happyData[display.toString()].freedom + "</br>" + "Year: "+ years)
+        .html("Country: " + d.properties.name  + "</br>" + "Freedom Rating: " + happyData[display.toString()].freedom.toFixed(2) + "</br>" + "Year: "+ years)
         }
         else if(fil == 'generosity'){
           d3.select(this).transition()
                   .style("stroke", "black")
                   .attr("stroke-width", 4);
         tooltip.style("visibility", "visible")
-        .html("Country: " + d.properties.name  + "</br>" + "Generosity Rating: " + happyData[display.toString()].generosity + "</br>" + "Year: "+ years)
+        .html("Country: " + d.properties.name  + "</br>" + "Generosity Rating: " + happyData[display.toString()].generosity.toFixed(2) + "</br>" + "Year: "+ years)
         }
         else if(fil == 'trust'){
           d3.select(this).transition()
                   .style("stroke", "black")
                   .attr("stroke-width", 4);
         tooltip.style("visibility", "visible")
-        .html("Country: " + d.properties.name  + "</br>" + "Trust Rating: " + happyData[display.toString()].trust + "</br>" + "Year: "+ years)
+        .html("Country: " + d.properties.name  + "</br>" + "Trust Rating: " + happyData[display.toString()].trust.toFixed(2) + "</br>" + "Year: "+ years)
         }
         else if(fil == 'health'){
           d3.select(this).transition()
           .style("stroke", "black")
           .attr("stroke-width", 4);
           tooltip.style("visibility", "visible")
-          .html("Country: " + d.properties.name  + "</br>" + "Health rating: " + happyData[display.toString()].health + "</br>" + "Year: "+ years)
+          .html("Country: " + d.properties.name  + "</br>" + "Health rating: " + happyData[display.toString()].health.toFixed(2) + "</br>" + "Year: "+ years)
         }
       }
       catch (err) {
@@ -225,11 +225,30 @@ function drawGauge()
   }
   datap.push(pointp);
 
-  console.log(datap)
-console.log(datap[0]['score'])
-var cScore = datap[0]['score'] / 10
-console.log(datap[0]['score']/10 * 100)
-console.log(180 * cScore)
+  var fil = document.getElementById('filters').value;
+
+  if(fil == 'rank'){
+    var cScore = datap[0]['score'] / 10
+  }
+  else if(fil == 'economy'){
+    var cScore = datap[0]['economy'] / 10
+  }
+  else if(fil == 'social_support'){
+    var cScore = datap[0]['social_support'] / 10
+  }
+  else if(fil == 'freedom'){
+    var cScore = datap[0]['freedom'] / 10
+  }
+  else if(fil == 'generosity'){
+    var cScore = datap[0]['generosity'] / 10
+  }
+  else if(fil == 'trust'){
+    var cScore = datap[0]['trust'] / 10
+  }
+  else if(fil == 'health'){
+    var cScore = datap[0]['health'] / 10
+  }
+
   gauge = d3.select('#gauge')
   arc = d3.arc()
   .innerRadius(100)
@@ -300,7 +319,7 @@ console.log(180 * cScore)
         .data(datap)
         .attr('id', 'arrow')
         .transition()
-        .duration(1000)
+        .duration(0)
         .delay(200)
         .attr('width', 150)
         .attr('height', 150)

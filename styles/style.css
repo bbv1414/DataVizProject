@@ -1,10 +1,11 @@
-svg {
+.map {
     border:1px solid black;
     border-radius: 10px;                
     width:1000px;   
     height:650px;  
     display:block;
     margin:auto;
+    background-color: #fff;
 }
 .tooltip{
     background-color: white;
@@ -16,4 +17,24 @@ svg {
     display: inline-block;
     margin-top: -50px;
     visibility: hidden;
+}
+
+.gauge {
+    border:1px solid black;
+    border-radius: 10px;                
+    width:1000px;   
+    height:650px;  
+    display:block;
+    margin:auto;
+    background-color: #fff;
+}
+
+svg {
+    border:1px solid black;
+    border-radius: 10px;                
+    width:1000px;   
+    height:650px;  
+    display:block;
+    margin:auto;
+    background-color: #fff;
 }
