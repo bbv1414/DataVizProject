@@ -70,7 +70,7 @@ function drawMap() {
  
     // create the map projection and geoPath
     let projection = d3.geoMercator()
-                        .scale(150)
+                        .scale(250)
                         .center(d3.geoCentroid(geoData))
                         .translate([+svg.style('width').replace('px','')/1.75,
                                     +svg.style('height').replace('px','')/2.2]);
