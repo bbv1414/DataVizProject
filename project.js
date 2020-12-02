@@ -473,6 +473,14 @@ function drawSpider(){
       .attr("opacity", 0.5);
     }
 
+    svgS.append('text')
+  .attr('x', 225)
+  .attr('y', 30)
+  .attr('font-size', '25px')
+  .attr("font-weight",900)
+  .attr('font-style', 'bold')
+  .attr('text-decoration', 'underline')
+  .text('Individual Characteristics for ' + currentCountry + " in year " + years)
 
 
 }
@@ -595,5 +603,13 @@ function drawBar(){
     yDist += 21.9
   }
 
+  bar.append('text')
+  .attr('x', 350)
+  .attr('y', 30)
+  .attr('font-size', '25px')
+  .attr("font-weight",900)
+  .attr('font-style', 'bold')
+  .attr('text-decoration', 'underline')
+  .text('Top 25 Happiest Countries in ' + years)
   
 }

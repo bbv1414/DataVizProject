@@ -15,6 +15,11 @@
     </style>
     <body>
         <h1>Happiness Index per Country (2015-2019)</h1>
+        <br>
+        <p>
+            This datasets shows the relational happiness levels between each country.
+        </p>
+        <br>
         <label for = "yea">Select a year:</label>
         <select id = "yea" onchange = "draw()">
             <option onchange = "drawMap()" value = "2015">2015</option>
@@ -39,13 +44,15 @@
             <div>
                 <svg id = 'bar'></svg>
             </div>
+            <br>
         <div>
             <svg id='svg' class="map">
             </svg>
         </div>
+        <br>
         
         <div>
-            <svg id = 'spider'></svg>
+            <svg id = 'spider' class="spider"></svg>
         </div>
     </body>
 </html>
