@@ -14,9 +14,9 @@ let labelsForSpider = ["Economy", "Social Support", "Health", "Freedom", "Trust 
 let features = ["economy", "social_support", "health", "freedom", "trust", "generosity"]
 
 var currentCountry = "Canada"
-
+var load = 0;
 let svgS = d3.select("#spider").append("svg")
-
+var rotation = 0;
 
 let radialScale = d3.scaleLinear()
   .domain([0,10]) //domain for the data values 
@@ -114,6 +114,7 @@ function drawMap() {
     .on('mousedown', function(d,i){
       currentCountry = d.properties.name;
       svgS.remove()
+      drawGauge();
       drawSpider();
       console.log(d.properties.name)
     })
@@ -157,8 +158,21 @@ function drawMap() {
 
 function drawGauge()
 {
-  gauge = d3.select('#gauge')
+  entry = "('2015', '" + currentCountry + "')"
+  console.log(happyData)
+  let datap = [];
+  var pointp = {}
+  for (const [key, value] of Object.entries(happyData[entry])) {
+    pointp[key] = value
+  }
+  datap.push(pointp);
 
+  console.log(datap)
+console.log(datap[0]['score'])
+var cScore = datap[0]['score'] / 10
+console.log(datap[0]['score']/10 * 100)
+console.log(180 * cScore)
+  gauge = d3.select('#gauge')
   arc = d3.arc()
   .innerRadius(100)
   .outerRadius(185)
@@ -170,7 +184,8 @@ function drawGauge()
  
   var colorScale = d3.scaleSequential(d3.interpolateRdYlGn).domain([0, 200]); //get our scale of colors given max GDP
   //var axisScale = d3.scaleLinear().domain(colorScale.domain()).range([0, 200]);
-
+  if(load == 0)
+  {
   linearGradient.selectAll("stop") //Create the gradient
      .data(colorScale.ticks().map((t, i, n) => ({ offset: `${100*i/n.length}%`, color: colorScale(t) })))
      .enter().append("stop")
@@ -221,18 +236,56 @@ function drawGauge()
      .attr('href', 'data/Upset-Face.svg')
      .attr('opacity', '1')
 
-     gauge.append('image')
-     .attr('width', 250)
-     .attr('height', 250)
-     .attr('x', 375)
-     .attr('y', 160)
-     .attr('href', 'data/arrow_direction_blue_48.svg')
-     .attr('opacity', '1')
+
+     rotate = `rotate(${-90 + 180* cScore}, 500,285)`
+        gauge.append('image')
+        .data(datap)
+        .attr('id', 'arrow')
+        .transition()
+        .duration(1000)
+        .delay(200)
+        .attr('width', 250)
+        .attr('height', 250)
+        .attr('x', 375)
+        .attr('y', 160)
+        .attr('transform', `rotate(${-90 + 180* cScore}, 500,285)`)
+        .attr('href', 'data/arrow_direction_blue_48.svg')
+        .attr('opacity', '1')
+        load = 1;
+        rotate = `rotate(${-90 + 180* cScore}, 500,285)`
+    }
+    else{
+      console.log(typeof rotate)
+      var interpolate = d3.interpolateString(rotate, `rotate(${-90 + 180* cScore}, 500,285)`)
+        gauge.select('#arrow')
+        .data(datap)
+        .transition()
+        .duration(2500)
+        .ease(d3.easeElastic)
+        .attrTween('transform', function(d,i,a){return interpolate})
+    }
+    rotate = `rotate(${-90 + 180* cScore}, 500,285)`
+
 }
 
+function rotateGauge(cScore)
+{
+  entry = "('2015', '" + currentCountry + "')"
+  console.log(happyData)
+  let datap = [];
+  var pointp = {}
+  for (const [key, value] of Object.entries(happyData[entry])) {
+    pointp[key] = value
+  }
+  var cScore = datap[0]['score'] / 10
 
-
-
+  datap.push(pointp);
+  circles = gauge.selectAll('image').select('arrow')
+  .data(datap)
+  .transition()
+  .delay(200)
+  .attr('transform', `rotate(${-90 + 180* cScore}, 500,285)`)
+}
 function drawSpider(){
     
   svgS = d3.select("#spider").append("svg")
