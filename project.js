@@ -267,25 +267,6 @@ console.log(180 * cScore)
     rotate = `rotate(${-90 + 180* cScore}, 500,285)`
 
 }
-
-function rotateGauge(cScore)
-{
-  entry = "('2015', '" + currentCountry + "')"
-  console.log(happyData)
-  let datap = [];
-  var pointp = {}
-  for (const [key, value] of Object.entries(happyData[entry])) {
-    pointp[key] = value
-  }
-  var cScore = datap[0]['score'] / 10
-
-  datap.push(pointp);
-  circles = gauge.selectAll('image').select('arrow')
-  .data(datap)
-  .transition()
-  .delay(200)
-  .attr('transform', `rotate(${-90 + 180* cScore}, 500,285)`)
-}
 function drawSpider(){
     
   svgS = d3.select("#spider").append("svg")
