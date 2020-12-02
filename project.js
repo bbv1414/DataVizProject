@@ -18,6 +18,8 @@ var load = 0;
 let svgS = d3.select("#spider").append("svg")
 var rotation = 0;
 
+var years;
+
 let radialScale = d3.scaleLinear()
   .domain([0,10]) //domain for the data values 
   .range([0,250]);
@@ -54,8 +56,11 @@ function drawMap() {
   const defs = svg.append("defs");
   const linearGradient = defs.append("linearGradient").attr("id", "linear-gradient");
 
-  var colorScale = d3.scaleSequential(d3.interpolateRdYlGn).domain([150, 1]);
+  var colorScale = d3.scaleSequential(d3.interpolateRdYlGn).domain([158, 1]);
+  var colors = d3.scaleSequential(d3.interpolateRdYlGn).domain([0,10]);
 
+  years = document.getElementById('yea').value;
+  var fil = document.getElementById('filters').value;
 
   linearGradient.selectAll("stop")
   .data(colorScale.ticks().map((t, i, n) => ({ offset: `${100*i/n.length}%`, color: colorScale(t) })))
@@ -84,31 +89,42 @@ function drawMap() {
     .attr('d', path)
     .style('fill', d => {
       try { 
-      let val = +happyData["('2015', '"+d.properties.name.toString()+"')"].rank;
-      return colorScale(val);
+        if(fil.toString() == 'rank'){
+          let val = +happyData["('"+ years +"', '"+d.properties.name.toString()+"')"].rank;
+          console.log("test")
+
+          //console.log(val)
+          return(colorScale(val));
+        }
+        else if(fil == 'economy'){
+          let val = +happyData["('"+ years +"', '"+d.properties.name.toString()+"')"].economy;
+          return colors(val);
+        }
+        else if(fil == 'social_support'){
+          let val = +happyData["('"+ years +"', '"+d.properties.name.toString()+"')"].social_support;
+          return colors(val);
+        }
+        else if(fil == 'freedom'){
+          let val = +happyData["('"+ years +"', '"+d.properties.name.toString()+"')"].freedom;
+          return colors(val);
+        }
+        else if(fil == 'generosity'){
+          let val = +happyData["('"+ years +"', '"+d.properties.name.toString()+"')"].generosity;
+          return colors(val);
+        }
+        else if(fil == 'trust'){
+          let val = +happyData["('"+ years +"', '"+d.properties.name.toString()+"')"].trust;
+          return colors(val);
+        }
+        else if(fil == 'health'){
+          let val = +happyData["('"+ years +"', '"+d.properties.name.toString()+"')"].health;
+          return colors(val);
+        }
       }
       catch(err){
         return 'white'
       }
     })
-    // .style('fill', function() {
-    //     var x = Math.random()
-    //     if(x > 0 && x < .2) {
-    //         return "black"
-    //     }
-    //     else if(x > .2 && x < .4){
-    //         return "orange"
-    //     }
-    //     else if(x > .4 && x < .6){
-    //         return "green"
-    //     }
-    //     else if(x > .6 && x < .8){
-    //         return "red"
-    //     }
-    //     else {
-    //         return "blue"
-    //     }
-    // })
     .style('stroke', 'black')
     .style('stroke-width', "1")
     .on('mousedown', function(d,i){
@@ -116,25 +132,68 @@ function drawMap() {
       svgS.remove()
       drawGauge();
       drawSpider();
-      console.log(d.properties.name)
+      //console.log(d.properties.name)
     })
     .on('mouseover', function(d,i) {
-      //console.log('mouseover on ' + d.properties.name)
-      // tooltip
-      //   .style('visibility', 'visible')
-      //   .style('left', d3.event.pageX + 'px')
-      //   .style('top', d3.event.pageY + 'px')
-      //   .html("Country: " + d.properties.name  + "</br>" + "Happiness Index: " + "</br>" + "Year: ")
       d3.select(this).style('stroke-width', 2)
       d3.select(this).style('stroke', 'black');
-      console.log(typeof(d.properties.name))
+      //console.log(typeof(d.properties.name))
       try {
-        var display = "('2015', '"+d.properties.name.toString()+"')";
-        d3.select(this).transition()
+        var display = "('"+ years + "', '"+d.properties.name.toString()+"')";
+        // d3.select(this).transition()
+        //           .style("stroke", "black")
+        //           .attr("stroke-width", 4);
+        // tooltip.style("visibility", "visible")
+        // .html("Country: " + d.properties.name  + "</br>" + "Happiness Rank: " + happyData[display.toString()].rank + "</br>" + "Year: " + years)
+        if(fil == 'rank'){
+          d3.select(this).transition()
                   .style("stroke", "black")
                   .attr("stroke-width", 4);
         tooltip.style("visibility", "visible")
-        .html("Country: " + d.properties.name  + "</br>" + "Happiness Rank: " + happyData[display.toString()].rank + "</br>" + "Year: 2015")
+        .html("Country: " + d.properties.name  + "</br>" + "Happiness Rank: " + happyData[display.toString()].rank + "</br>" + "Year: "+ years)
+        }
+        else if(fil == 'economy'){
+          d3.select(this).transition()
+                  .style("stroke", "black")
+                  .attr("stroke-width", 4);
+        tooltip.style("visibility", "visible")
+        .html("Country: " + d.properties.name  + "</br>" + "Economy Rating: " + happyData[display.toString()].economy + "</br>" + "Year: "+ years)
+        }
+        else if(fil == 'social_support'){
+          d3.select(this).transition()
+                  .style("stroke", "black")
+                  .attr("stroke-width", 4);
+        tooltip.style("visibility", "visible")
+        .html("Country: " + d.properties.name  + "</br>" + "Social Support Rating: " + happyData[display.toString()].social_support + "</br>" + "Year: "+ years)
+        }
+        else if(fil == 'freedom'){
+          d3.select(this).transition()
+                  .style("stroke", "black")
+                  .attr("stroke-width", 4);
+        tooltip.style("visibility", "visible")
+        .html("Country: " + d.properties.name  + "</br>" + "Freedom Rating: " + happyData[display.toString()].freedom + "</br>" + "Year: "+ years)
+        }
+        else if(fil == 'generosity'){
+          d3.select(this).transition()
+                  .style("stroke", "black")
+                  .attr("stroke-width", 4);
+        tooltip.style("visibility", "visible")
+        .html("Country: " + d.properties.name  + "</br>" + "Generosity Rating: " + happyData[display.toString()].generosity + "</br>" + "Year: "+ years)
+        }
+        else if(fil == 'trust'){
+          d3.select(this).transition()
+                  .style("stroke", "black")
+                  .attr("stroke-width", 4);
+        tooltip.style("visibility", "visible")
+        .html("Country: " + d.properties.name  + "</br>" + "Trust Rating: " + happyData[display.toString()].trust + "</br>" + "Year: "+ years)
+        }
+        else if(fil == 'health'){
+          d3.select(this).transition()
+          .style("stroke", "black")
+          .attr("stroke-width", 4);
+          tooltip.style("visibility", "visible")
+          .html("Country: " + d.properties.name  + "</br>" + "Health rating: " + happyData[display.toString()].health + "</br>" + "Year: "+ years)
+        }
       }
       catch (err) {
         d3.select(this).transition()
@@ -158,8 +217,7 @@ function drawMap() {
 
 function drawGauge()
 {
-  entry = "('2015', '" + currentCountry + "')"
-  console.log(happyData)
+  entry = "('"+ years + "', '" + currentCountry + "')";
   let datap = [];
   var pointp = {}
   for (const [key, value] of Object.entries(happyData[entry])) {
@@ -213,31 +271,31 @@ console.log(180 * cScore)
      .attr('transform', 'rotate(-45)')
 
      gauge.append('image')
-     .attr('width', 75)
-     .attr('height', 75)
-     .attr('x', 590)
+     .attr('width', 50)
+     .attr('height', 50)
+     .attr('x', 600)
      .attr('y', 200)
      .attr('href', 'data/Excited-Smiley-Face.svg')
      .attr('opacity', '1')
     
      gauge.append('image')
-     .attr('width', 75)
-     .attr('height', 75)
-     .attr('x', 462)
-     .attr('y', 120)
+     .attr('width', 50)
+     .attr('height', 50)
+     .attr('x', 475)
+     .attr('y', 130)
      .attr('href', 'data/Neutral-Smiley-Face.svg')
      .attr('opacity', '1')
 
      gauge.append('image')
-     .attr('width', 75)
-     .attr('height', 75)
-     .attr('x', 333)
+     .attr('width', 50)
+     .attr('height', 50)
+     .attr('x', 353)
      .attr('y', 205)
      .attr('href', 'data/Upset-Face.svg')
      .attr('opacity', '1')
 
 
-     rotate = `rotate(${-90 + 180* cScore}, 500,285)`
+     rotate = `rotate(${-120 + 210* cScore}, 500,285)`
         gauge.append('image')
         .data(datap)
         .attr('id', 'arrow')
@@ -248,11 +306,11 @@ console.log(180 * cScore)
         .attr('height', 150)
         .attr('x', 425)
         .attr('y', 160)
-        .attr('transform', `rotate(${-90 + 180* cScore}, 500,285)`)
+        .attr('transform', `rotate(${-120 + 210* cScore}, 500,285)`)
         .attr('href', 'data/upPointer.svg')
         .attr('opacity', '1')
         load = 1;
-        rotate = `rotate(${-90 + 180* cScore}, 500,285)`
+        rotate = `rotate(${-120 + 210* cScore}, 500,285)`
     }
     else{
       console.log(typeof rotate)
@@ -260,11 +318,11 @@ console.log(180 * cScore)
         gauge.select('#arrow')
         .data(datap)
         .transition()
-        .duration(2500)
+        .duration(2000)
         .ease(d3.easeElastic)
         .attrTween('transform', function(d,i,a){return interpolate})
     }
-    rotate = `rotate(${-90 + 180* cScore}, 500,285)`
+    rotate = `rotate(${-120 + 210* cScore}, 500,285)`
 
 }
 function drawSpider(){
@@ -285,8 +343,8 @@ function drawSpider(){
      .attr("stop-color", d => d.color)
  
   var point = {}
-  entry = "('2015', '" + currentCountry + "')"
-  console.log(entry)
+  entry = "('"+ years + "', '" + currentCountry + "')";
+  //console.log(entry)
   for (const [key, value] of Object.entries(happyData[entry])) {
     point[key] = value
   }
@@ -347,8 +405,6 @@ function drawSpider(){
      // let colors = color[t];
       let cord = getPath(d);
 
-      
-
       svgS.append("path")
       .data(data)
       .datum(cord)
@@ -366,25 +422,6 @@ function drawSpider(){
       })
       .attr("stroke-opacity", 1)
       .attr("opacity", 0.5);
-      // .on('mouseover', function(d,i) {
-      //   //console.log('mouseover on ' + d.properties.name)
-      //   tooltip
-      //     .style('visibility', 'visible')
-      //     .style('left', d3.event.pageX + 'px')
-      //     .style('top', d3.event.pageY + 'px')
-      //     .html("Country: " + d.properties.name  + "</br>" + "Happiness Index: " + "</br>" + "Year: ")
-      //   d3.select(this).style('stroke-width', 4)
-      //   d3.select(this).style('stroke', 'red');
-      // })
-      // .on('mousemove',function(d,i) {
-      //   //console.log('mousemove on ' + d.properties.name);
-      // })
-      // .on('mouseout', function(d,i) {
-      //   //console.log('mouseout on ' + d.properties.name);
-      //   tooltip.style('visibility' , 'hidden')
-      //   d3.select(this).style('stroke-width', 1)
-      //   d3.select(this).style('stroke', 'black');
-      // });
     }
 
 
